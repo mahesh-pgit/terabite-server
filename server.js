@@ -5,8 +5,33 @@ const fetch = require("cross-fetch");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for all requests
-app.use(cors());
+// List of allowed domains
+const allowedOrigins = [
+	"http://localhost:1234",
+	"https://terabite-by-mahesh.vercel.app",
+	"https://terabite.vercel.app",
+	"https://terabite-app.vercel.app",
+];
+
+// CORS configuration
+const corsOptions = {
+	origin: function (origin, callback) {
+		// Allow requests with no origin (like mobile apps or curl requests)
+		if (!origin) return callback(null, true);
+
+		if (allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+};
+
+// Apply CORS middleware with options
+app.use(cors(corsOptions));
+
+//  Enable CORS for all requests
+// app.use(cors());
 
 // For Restaurant API
 app.get("/api/restaurants", async (req, res) => {
