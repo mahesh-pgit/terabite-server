@@ -4,7 +4,7 @@
   "description": "Server for Terabite Application",
   "scripts": {
     "start": "node server.js",
-    "build": "parcel build server.js --target node --out-dir dist"
+    "build": "parcel build server.js --target node --dist-dir dist"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,14 @@
     "axios": "^1.8.4",
     "cors": "^2.8.5",
     "cross-fetch": "^4.1.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "parcel": "^2.14.4"
+  },
+  "targets": {
+    "node": {
+      "context": "node",
+      "includeNodeModules": true,
+      "outputFormat": "commonjs"
+    }
   }
 }
