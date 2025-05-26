@@ -3,39 +3,50 @@ const cors = require("cors");
 const fetch = require("cross-fetch");
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // List of allowed domains
-const allowedOrigins = [
-	"http://localhost:1234",
-	"https://terabite-by-mahesh.vercel.app",
-	"https://terabite.vercel.app",
-	"https://terabite-app.vercel.app",
-];
+// const allowedOrigins = ["http://localhost:1234", "https://terabite.vercel.app"];
 
 // CORS configuration
-const corsOptions = {
-	origin: function (origin, callback) {
-		// Allow requests with no origin (like mobile apps or curl requests)
-		if (!origin) return callback(null, true);
+// const corsOptions = {
+// 	origin: function (origin, callback) {
+// 		// Allow requests with no origin (like mobile apps or curl requests)
+// 		if (!origin) return callback(null, true);
 
-		if (allowedOrigins.includes(origin)) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"));
-		}
-	},
-};
+// 		if (allowedOrigins.includes(origin)) {
+// 			callback(null, true);
+// 		} else {
+// 			callback(new Error("Not allowed by CORS"));
+// 		}
+// 	},
+// };
 
 // Apply CORS middleware with options
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 //  Enable CORS for all requests
-// app.use(cors());
+app.use(cors());
 
-// For Restaurant API
+// Basic welcome route
+app.get("/", (req, res) => {
+	res.json({ statusMessage: "Welcome to terabite server!" });
+});
+
+// API Entry Point
+app.get("/api", (req, res) => {
+	res.json({ statusMessage: "Extended path required. Available paths: /restaurants and /menu" });
+});
+
+// Restaurant API
 app.get("/api/restaurants", async (req, res) => {
 	const { lat, lng } = req.query; // Destructure latitude and longitude
+
+	if (!lat || !lng) {
+		res.json({
+			statusCode: 1,
+			statusMessage: "Lat or Lng is missing",
+		});
+	}
 
 	console.log("Restaurant API request:", req.query); // Log the incoming request parameters
 
@@ -66,9 +77,16 @@ app.get("/api/restaurants", async (req, res) => {
 	}
 });
 
-// For Menu API
+// Menu API
 app.get("/api/menu", async (req, res) => {
 	const { lat, lng, restaurantId } = req.query;
+
+	if (!lat || !lng || !restaurantId) {
+		res.json({
+			statusCode: 1,
+			statusMessage: "Lat or Lng or restaurantId is missing",
+		});
+	}
 
 	console.log("Menu API request:", req.query); // Log the incoming request parameters
 
@@ -99,12 +117,7 @@ app.get("/api/menu", async (req, res) => {
 	}
 });
 
-// Basic welcome route
-app.get("/", (req, res) => {
-	res.json({ test: "Welcome to your server!" });
-});
-
 // Start the server
-app.listen(port, () => {
-	console.log(`Server is listening on port ${port}`);
+app.listen(3000, "0.0.0.0", () => {
+	console.log("Server is listening on port 3000");
 });
